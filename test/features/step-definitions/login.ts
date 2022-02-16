@@ -25,5 +25,6 @@ When(
 
 Then(/^Login must be successfull$/, async function(){
   await console.log("Login Successfull");
+  await console.log("Testing git");
 }
 );
