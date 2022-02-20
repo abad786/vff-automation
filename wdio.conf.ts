@@ -1,3 +1,4 @@
+import allure from "@wdio/allure-reporter"
 export const config: WebdriverIO.Config = {
   //
   // ====================
@@ -23,7 +24,7 @@ export const config: WebdriverIO.Config = {
     // for all available options
     tsNodeOpts: {
       transpileOnly: true,
-      project: "test/tsconfig.json",
+      project: "tsconfig.json",
     },
     // tsconfig-paths is only used if "tsConfigPathsOpts" are provided, if you
     // do please make sure "tsconfig-paths" is installed as dependency
@@ -158,15 +159,17 @@ export const config: WebdriverIO.Config = {
   // Test reporter for stdout.
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
-  reporters: ["spec",
-             ["allure", 
-               { outputDir: "allure-results",
-                disableWebdriverStepsReporting: true,
-                useCucumberStepReporter: true
-                 
-               }
-             ]
-            ],
+  reporters: [
+    "spec",
+    [
+      "allure",
+      {
+        outputDir: 'allure-results',
+        disableWebdriverStepsReporting: true,
+        useCucumberStepReporter: true,
+      },
+    ],
+  ],
 
   //
   // If you are using Cucumber you need to specify the location of your step definitions.
@@ -208,8 +211,10 @@ export const config: WebdriverIO.Config = {
    * @param {Object} config wdio configuration object
    * @param {Array.<Object>} capabilities list of capabilities details
    */
-  // onPrepare: function (config, capabilities) {
-  // },
+  /*onPrepare: function (config, capabilities) {
+   
+  },*/
+
   /**
    * Gets executed before a worker process is spawned and can be used to initialise specific service
    * for that worker as well as modify runtime environments in an async fashion.
@@ -262,8 +267,13 @@ export const config: WebdriverIO.Config = {
    * @param {ITestCaseHookParameter} world    world object containing information on pickle and test step
    * @param {Object}                 context  Cucumber World object
    */
-  // beforeScenario: function (world, context) {
-  // },
+  beforeScenario: function (world, context) {
+    let arr = world.pickle.name.split(/:/)
+    // @ts-ignore
+    if(arr.length > 0) browser.config.testid = arr[0]
+    // @ts-ignore
+    if(!browser.config.testid) throw Error(`Error getting testid for current scenario: ${world.pickle.name}`)
+  },
   /**
    *
    * Runs before a Cucumber Step.
@@ -304,8 +314,11 @@ export const config: WebdriverIO.Config = {
    * @param {String}                   uri      path to feature file
    * @param {GherkinDocument.IFeature} feature  Cucumber feature object
    */
-  // afterFeature: function (uri, feature) {
-  // },
+   afterFeature: function (uri, feature) {
+     //@ts-ignore
+    allure.addEnvironment("Environment: ", browser.config.environment)
+    allure.addEnvironment("Middleware: ", "VFF")
+   },
 
   /**
    * Runs after a WebdriverIO command gets executed
@@ -341,8 +354,9 @@ export const config: WebdriverIO.Config = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  // onComplete: function(exitCode, config, capabilities, results) {
-  // },
+  /*onComplete: function (exitCode, config, capabilities, results) {
+   
+  },*/
   /**
    * Gets executed when a refresh happens.
    * @param {String} oldSessionId session ID of the old session

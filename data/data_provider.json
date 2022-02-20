@@ -1,0 +1,21 @@
+{
+    "title":"Earns point with",
+    "login":{
+        "active":{
+            "username":"1204090511",
+            "password":"Alliswell@123"
+
+        },
+        "suspended":{
+            "username":"1204090511",
+            "password":"Alliswell@123"
+
+        },
+        "closed":{
+            "username":"1204090511",
+            "password":"Alliswell@123"
+
+        }
+
+    }
+}
